@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App - Real-time Weather Updates</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Navigation Bar */
+        nav {
+            background: #ffffff;
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+            color: #667eea;
+            font-size: 1.5rem;
+            font-weight: 700;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #666;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #667eea;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Messages Section */
+        .messages-container {
+            max-width: 700px;
+            margin: 2rem auto 0;
+            padding: 0 1rem;
+        }
+
+        .message {
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 10px;
+            border-left: 4px solid;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .message::before {
+            font-size: 1.5rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .message.success {
+            border-left-color: #10b981;
+            color: #065f46;
+            background: #ecfdf5;
+        }
+
+        .message.success::before {
+            content: '✓';
+            background: #10b981;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .message.error {
+            border-left-color: #ef4444;
+            color: #991b1b;
+            background: #fef2f2;
+        }
+
+        .message.error::before {
+            content: '✕';
+            background: #ef4444;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .message.warning {
+            border-left-color: #f59e0b;
+            color: #92400e;
+            background: #fffbeb;
+        }
+
+        .message.warning::before {
+            content: '⚠';
+            background: #f59e0b;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .message.info {
+            border-left-color: #3b82f6;
+            color: #1e40af;
+            background: #eff6ff;
+        }
+
+        .message.info::before {
+            content: 'i';
+            background: #3b82f6;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        footer a {
+            color: white;
+            text-decoration: none;
+            border-bottom: 1px solid white;
+        }
+
+        footer a:hover {
+            opacity: 0.8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-container {
+                padding: 1rem;
+            }
+
+            .logo {
+                font-size: 1.25rem;
+            }
+
+            .logo-icon {
+                width: 35px;
+                height: 35px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .message {
+                padding: 0.875rem 1rem;
+                font-size: 0.875rem;
+            }
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 2rem auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="{% url 'home' %}" class="logo">
+                <div class="logo-icon">☀</div>
+                <span>WeatherApp</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <div class="container">
+        {% block content %}
+        {% endblock content %}
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 WeatherApp. All rights reserved.</p>
+        <p>Powered by OpenWeatherMap API</p>
+    </footer>
+</body>
+</html>
